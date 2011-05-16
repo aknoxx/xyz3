@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="Dst3" default="build" basedir=".">
+
+    <property name="jsf.dir" value="1_jsf"/>
+    <property name="jsf.buildFile" value="${jsf.dir}/build.xml"/>
+
+    <property name="injection.dir" value="2_injection"/>
+    <property name="injection.agent.buildFile" value="${injection.dir}/agent/build.xml"/>
+    <property name="injection.injector.buildFile" value="${injection.dir}/injector/build.xml"/>
+    <property name="injection.sample.buildFile" value="${injection.dir}/sample/build.xml"/>
+
+    <property name="plugins.dir" value="3_plugins"/>
+    <property name="plugins.loader.buildFile" value="${plugins.dir}/loader/build.xml"/>
+    <property name="plugins.sample.buildFile" value="${plugins.dir}/sample/build.xml"/>
+
+    <property name="zip.name" value="dst3_submission.zip"/>
+
+    <!-- create the zip file: -->
+    <target name="zip" depends="clean">
+        <delete file="${zip.name}"/>
+        <zip destfile="${zip.name}">
+            <fileset dir="${basedir}"/>
+        </zip>
+    </target>
+
+    <!-- build projects: -->
+    <target name="build" depends="build-jsf-project,build-injection-projects,build-plugin-projects"/>
+
+    <target name="build-jsf-project">
+        <ant antfile="${jsf.buildFile}" inheritAll="false" target="dist"/>
+    </target>
+
+    <target name="build-injection-projects">
+        <ant antfile="${injection.injector.buildFile}" inheritAll="false" target="dist"/>
+        <ant antfile="${injection.agent.buildFile}" inheritAll="false" target="dist"/>
+        <ant antfile="${injection.sample.buildFile}" inheritAll="false" target="compile"/>
+    </target>
+
+    <target name="build-plugin-projects">
+        <ant antfile="${plugins.loader.buildFile}" inheritAll="false" target="dist"/>
+        <ant antfile="${plugins.sample.buildFile}" inheritAll="false" target="dist"/>
+    </target>
+
+    <target name="deploy" depends="build-jsf-project">
+        <ant antfile="${jsf.buildFile}" inheritAll="false" target="setup"/>
+        <ant antfile="${jsf.buildFile}" inheritAll="false" target="deploy"/>
+    </target>
+    <target name="undeploy">
+        <ant antfile="${jsf.buildFile}" inheritAll="false" target="undeploy"/>
+    </target>
+    <target name="redeploy" depends="undeploy,deploy"/>
+
+    <target name="run-inj" depends="build-injection-projects">
+        <ant antfile="${injection.sample.buildFile}" inheritAll="false" target="run"/>
+    </target>
+
+    <target name="run-inj-with-agent" depends="build-injection-projects">
+        <ant antfile="${injection.sample.buildFile}" inheritAll="false" target="run-with-agent"/>
+    </target>
+
+    <target name="run-plugin-loader" depends="build-plugin-projects">
+        <ant antfile="${plugins.loader.buildFile}" inheritAll="false" target="run"/>
+    </target>
+
+    <!-- clean build artifacts: -->
+    <target name="clean">
+	   <ant antfile="${jsf.buildFile}" inheritAll="false" target="clean"/>
+
+        <ant antfile="${injection.injector.buildFile}" inheritAll="false" target="clean"/>
+        <ant antfile="${injection.agent.buildFile}" inheritAll="false" target="clean"/>
+        <ant antfile="${injection.sample.buildFile}" inheritAll="false" target="clean"/>
+
+        <ant antfile="${plugins.loader.buildFile}" inheritAll="false" target="clean"/>
+        <ant antfile="${plugins.sample.buildFile}" inheritAll="false" target="clean"/>
+    </target>
+
+</project>

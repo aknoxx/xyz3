@@ -1,0 +1,89 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core">
+
+	<f:event type="preRenderView" listener="#{overviewBean.initLogin}"/>
+	
+    <h:head>
+		<title>dst3 - grid management system</title>
+	</h:head>
+	<h:body>
+		<h:form>
+			<h2>
+				DST 3 - All Grids
+			</h2>
+			
+			<h:dataTable id="gridsTable"
+				value="${overviewBean.grids}" var="item"
+				captionClass="list-caption"
+				columnClasses="list-column-center, list-column-left,
+								list-column-right, list-column-center"
+				footerClass="list-footer"
+				headerClass="list-header"
+				rowClasses="list-row-even, list-row-odd"
+				styleClass="list-background"
+				bgcolor="#F1F1F1" border="10" cellpadding="5" cellspacing="3" 
+				first="0" rows="4" width="50%" dir="LTR" frame="hsides" rules="all" 
+				summary="Grid overview table" >
+				
+				<h:column headerClass="list-header-left">
+					<f:facet name="header">
+						<h:outputText value="id" />
+					</f:facet>
+					<h:outputText value="#{item.id}" />
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="name"/>
+					</f:facet>
+					<h:outputText value="#{item.name}" />
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="location"/>
+					</f:facet>
+					<h:outputText value="#{item.location}" />
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="costsPerCPUMinute"/>
+					</f:facet>
+					<h:outputText value="#{item.costPerCPUMinute}" />
+				</h:column>
+				
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="freeCPUs"/>
+					</f:facet>
+					<h:outputText value="#{overviewBean.getAmountOfFreeCPUsByGrid(item.id)}" />
+				</h:column>
+				
+				<h:column>
+					<h:commandButton id="addJob" value="Add Job"
+							action="#{overviewBean.addJob(item.id)}"/>
+				</h:column>
+				
+			</h:dataTable>			
+			
+			<h3>
+				Navigation
+			</h3>
+			<ul>
+				  <li><h:outputLink value="assignment.jsf"><h:outputText value="Temporary job list"/></h:outputLink></li>
+				  <h:panelGroup rendered="#{!overviewBean.loggedIn}">
+		        		<li><h:outputLink value="register.jsf"><h:outputText value="Register"/></h:outputLink></li>
+		        		<li><h:outputLink value="login.jsf"><h:outputText value="Login"/></h:outputLink></li>
+		    	  </h:panelGroup>
+		    	  <h:panelGroup rendered="#{overviewBean.loggedIn}">
+		        		<li><h:commandLink action="#{overviewBean.logoutUser}"><h:outputText value="Logout"/></h:commandLink></li>
+		    	  </h:panelGroup>
+		    	  <li><h:outputLink value="home.jsf"><h:outputText value="Home"/></h:outputLink></li>
+			</ul>
+		</h:form>
+	</h:body>
+</html>

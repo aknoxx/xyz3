@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dst3_2_Sample" default="compile" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="../../lib"/>
+    
+    <path id="classpath">
+        <pathelement location="${build.dir}"/>
+        <fileset dir="${lib.dir}">
+            <include name="javassist.jar"/>
+            <include name="dst3_2_injector.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               classpathref="classpath"
+               debug="true" deprecation="true"
+               includeantruntime="false"/>
+    </target>
+
+    <!-- set your main class -->
+    <target name="run" depends="compile">
+        <java classname="your.main.class" fork="true" classpathref="classpath"/>
+    </target>
+
+    <!-- set your main class with agent support -->
+    <target name="run-with-agent" depends="compile">
+        <java classname="your.main.class" fork="true" classpathref="classpath">
+            <jvmarg value="-javaagent:${lib.dir}/dst3_2_agent.jar"/>
+        </java>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+    
+</project>

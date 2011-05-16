@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+		<title>dst3 - grid management system</title>
+	</h:head>
+	<h:body>
+		<h:form>
+			<h2>
+				DST 3 - Login
+			</h2>
+			<p></p>
+			
+			<h:panelGrid columns="3">
+	 
+				Username:	 
+				<h:inputText id="firstName" value="#{loginBean.username}" 
+					size="20" required="true"
+					label="First name" >
+				</h:inputText>
+				<h:message for="firstName" style="color:red" />
+				
+				Password:	 
+				<h:inputSecret id="password" value="#{loginBean.password}" 
+					size="20" required="true"
+					label="Password" >
+				</h:inputSecret>	 
+				<h:message for="password" style="color:red" />
+			
+			</h:panelGrid>
+				
+			 <h:commandButton id="login" value="Login"
+					action="#{loginBean.loginUser}"/>
+			<h:commandButton id="clear" value="Cancle"
+					action="reset"/>
+					
+			<h3>
+				Navigation
+			</h3>
+			<ul>
+				 <li><h:outputLink value="overview.jsf"><h:outputText value="View all grids"/></h:outputLink></li>
+				  <li><h:outputLink value="assignment.jsf"><h:outputText value="Temporary job list"/></h:outputLink></li>
+		          <li><h:outputLink value="register.jsf"><h:outputText value="Register"/></h:outputLink></li>
+		    	  <li><h:outputLink value="home.jsf"><h:outputText value="Home"/></h:outputLink></li>
+			</ul>
+					
+		</h:form>
+	</h:body>
+</html>

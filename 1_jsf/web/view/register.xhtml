@@ -1,0 +1,123 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core"
+		xmlns:s="http://jboss.org/seam/faces"
+		xmlns:ui="http://java.sun.com/jsf/facelets">
+
+    <h:head>
+		<title>dst3 - grid management system</title>
+	</h:head>
+	<h:body>
+		<h:form>
+			<h2>
+				DST 3 - Register
+			</h2>
+			<p></p>
+			
+			<br />
+ 
+			<h:panelGrid columns="3">
+	 
+			First name:	 
+			<h:inputText id="firstName" value="#{registerBean.user.firstName}" 
+				size="20" required="true"
+				label="First name" >
+				<f:validateLength minimum="2" maximum="20" />
+			</h:inputText>
+			<h:message for="firstName" style="color:red" />
+			
+			Last name:	 
+			<h:inputText id="lastName" value="#{registerBean.user.lastName}" 
+				size="20" required="true"
+				label="Last name" >
+				<f:validateLength minimum="2" maximum="20" />
+			</h:inputText>	 
+			<h:message for="lastName" style="color:red" />
+	 
+	 		Street:	 
+			<h:inputText id="street" value="#{registerBean.user.address.street}" 
+				size="20" required="true"
+				label="Street" >
+				<f:validateLength minimum="2" maximum="20" />
+			</h:inputText>	 
+			<h:message for="street" style="color:red" />
+			
+			City:	 
+			<h:inputText id="city" value="#{registerBean.user.address.city}" 
+				size="20" required="true"
+				label="City" >
+				<f:validateLength minimum="1" maximum="20" />
+			</h:inputText>	 
+			<h:message for="city" style="color:red" />
+			
+			Zipcode:	 
+			<h:inputText id="zipCode" value="#{registerBean.user.address.zipCode}" 
+				size="20" required="true"
+				label="Zipcode" >
+				<f:validateLongRange for="zipCode" minimum="1" maximum="99999" />
+			</h:inputText>	 
+			<h:message for="zipCode" style="color:red" />
+	 
+	 		Username:	 
+			<h:inputText id="username" value="#{registerBean.user.username}" 
+				size="20" required="true"
+				label="Username" >
+				<f:validateLength minimum="2" maximum="20" />
+			</h:inputText>	 
+			<h:message for="username" style="color:red" />
+			
+			Password:	 
+			<h:inputSecret id="passwordId" value="#{registerBean.user.password}" 
+				size="20" required="true"
+				label="Password" >
+				<f:validateLength minimum="5" maximum="20" />
+			</h:inputSecret>	 
+			<h:message for="passwordId" style="color:red" />
+			
+			Confirm pw:	 
+			<h:inputSecret id="confirmPasswordId" 
+				size="20" required="true"
+				label="Confirm pw" >
+				<f:validateLength minimum="5" maximum="20" />
+			</h:inputSecret>	 
+			<h:message for="confirmPasswordId" style="color:red" />
+			
+			Account No:	 
+			<h:inputText id="accountNo" value="#{registerBean.user.accountNo}" 
+				size="20" required="true"
+				label="Account No" >
+				<f:validateLongRange for="accountNo" minimum="1" maximum="99999999999" />
+			</h:inputText>	 
+			<h:message for="accountNo" style="color:red" />
+			
+			Bank code:	 
+			<h:inputText id="bankCode" value="#{registerBean.user.bankCode}" 
+				size="20" required="true"
+				label="Bank code" >
+				<f:validateLongRange for="bankCode" minimum="1" maximum="99999999999" />
+			</h:inputText>	 
+			<h:message for="bankCode" style="color:red" />
+	 
+		  </h:panelGrid>
+	 
+		  <h:commandButton id="register" value="Register"
+					action="#{registerBean.registerUser}"/>
+		
+			<h:outputText id="result"
+					value="#{registerBean.result}"/>
+			
+			<h3>
+				Navigation
+			</h3>
+			<ul>
+			  <li><h:outputLink value="overview.jsf"><h:outputText value="View all grids"/></h:outputLink></li>
+			  <li><h:outputLink value="assignment.jsf"><h:outputText value="Temporary job list"/></h:outputLink></li>
+	          <li><h:outputLink value="login.jsf"><h:outputText value="Login"/></h:outputLink></li>	
+	    	  <li><h:outputLink value="home.jsf"><h:outputText value="Home"/></h:outputLink></li>	  
+			</ul>
+				
+		</h:form>
+	</h:body>
+</html>

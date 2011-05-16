@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dst3_3_Sample" default="compile" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="../../lib"/>
+    <property name="plugins.dir" value="../loader/plugins"/>
+    <property name="jarfile.name" value="dst3_3_sample.jar"/>
+    
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="dst3_3_executable.jar"/>
+            <include name="dst3_2_injector.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               classpathref="classpath"
+               debug="true" deprecation="true"
+               includeantruntime="false"/>
+    </target>
+    
+    <target name="dist" depends="compile">
+        <jar destfile="${plugins.dir}/${jarfile.name}" basedir="${build.dir}"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="${plugins.dir}/${jarfile.name}"/>
+    </target>
+</project>

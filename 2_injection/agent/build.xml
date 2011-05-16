@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dst3_2_Agent" default="dist" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="${basedir}/../../lib"/>
+    <property name="jarfile.name" value="dst3_2_agent.jar"/>
+    
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="javassist.jar"/>
+            <include name="dst3_2_injector.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               classpathref="classpath"
+               debug="true" deprecation="true"
+               includeantruntime="false"/>
+    </target>
+
+    <!-- set your premain class -->
+    <target name="dist" depends="compile">
+        <jar destfile="${lib.dir}/${jarfile.name}" basedir="${build.dir}">
+            <manifest>
+                <attribute name="Premain-Class" value="your.premain.class"/>
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="${lib.dir}/${jarfile.name}"/>
+    </target>
+</project>

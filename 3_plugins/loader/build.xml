@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dst3_3_Loader" default="compile" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="../../lib"/>
+    <property name="jarfile.name" value="dst3_3_executable.jar"/>
+    
+    <path id="classpath">
+        <pathelement location="${build.dir}"/>
+        <fileset dir="${lib.dir}">
+            <include name="javassist.jar"/>
+            <include name="dst3_2_injector.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="compile" description="Compile project.">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               classpathref="classpath"
+               debug="true" deprecation="true"
+               includeantruntime="false"/>
+    </target>
+
+    <!-- Simply makes the IPluginExecutable class available to "clients". -->
+    <target name="dist" depends="compile">
+        <jar destfile="${lib.dir}/${jarfile.name}">
+            <fileset dir="${build.dir}" includes="dst3/dynload/IPluginExecutable.class"/>
+        </jar>
+    </target>
+
+    <!-- Set your main class -->
+    <target name="run" depends="compile">
+        <java classname="your.main.class" fork="true" classpathref="classpath"/>
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+    </target>
+    
+</project>

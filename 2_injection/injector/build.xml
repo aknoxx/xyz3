@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Dst3_2_Injector" default="dist" basedir=".">
+    <property name="src.dir" value="src"/>
+    <property name="build.dir" value="build"/>
+    <property name="lib.dir" value="${basedir}/../../lib"/>
+    <property name="jarfile.name" value="dst3_2_injector.jar"/>
+    
+    <path id="classpath">
+        <fileset dir="${lib.dir}">
+            <include name="javassist.jar"/>
+        </fileset>
+    </path>
+    
+    <target name="compile">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}"
+               classpathref="classpath"
+               debug="true" deprecation="true"
+               includeantruntime="false"/>
+    </target>
+    
+    <target name="dist" depends="compile">
+        <jar destfile="${lib.dir}/${jarfile.name}" basedir="${build.dir}" />
+    </target>
+    
+    <target name="clean">
+        <delete dir="${build.dir}"/>
+        <delete file="${lib.dir}/${jarfile.name}"/>
+    </target>
+</project>

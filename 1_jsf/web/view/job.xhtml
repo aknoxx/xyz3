@@ -1,0 +1,93 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" 
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+		xmlns:h="http://java.sun.com/jsf/html"
+		xmlns:f="http://java.sun.com/jsf/core">
+
+	<f:event type="preRenderView" listener="#{jobBean.loadGridId}"/>
+	<f:event type="preRenderView" listener="#{jobBean.initLogin}"/>
+
+    <h:head>
+		<title>dst3 - grid management system</title>
+	</h:head>
+	<h:body>
+		<h:form>
+			<h2>
+				DST 3 - Add Job
+			</h2>
+			<p></p>
+			
+			<h:panelGrid columns="3">
+	 
+				Grid-Id:	 
+				<h:outputText id="gridId" value="#{jobBean.gridId}" 
+					size="20" required="true" >
+				</h:outputText>
+				<h:message for="gridId" style="color:red" />
+				
+				Number of CPUs:	 
+				<h:inputText id="numCPUs" value="#{jobBean.numCPUs}" 
+					size="20" required="true" >
+					<f:validateLongRange for="zipCode" minimum="1" maximum="999" />
+				</h:inputText>	 
+				<h:message for="numCPUs" style="color:red" />
+		 
+		 		Workflow:	 
+				<h:inputText id="workflow" value="#{jobBean.workflow}" 
+					size="20" required="true" >
+					<f:validateLength minimum="1" maximum="20" />
+				</h:inputText>	 
+				<h:message for="workflow" style="color:red" />
+				
+				Parameter 1:	 
+					<h:inputText id="param1" value="#{jobBean.param1}" 
+						size="20" required="false" >
+					</h:inputText>
+					<h:message for="param1" style="color:red" />
+				Parameter 2:
+					<h:inputText id="param2" value="#{jobBean.param2}" 
+						size="20" required="false" >
+					</h:inputText>
+					<h:message for="param2" style="color:red" />
+				Parameter 3:
+					<h:inputText id="param3" value="#{jobBean.param3}" 
+						size="20" required="false" >
+					</h:inputText>
+					<h:message for="param3" style="color:red" />
+				Parameter 4:
+					<h:inputText id="param4" value="#{jobBean.param4}" 
+						size="20" required="false" >
+					</h:inputText>
+					<h:message for="param4" style="color:red" />
+				Parameter 5:
+					<h:inputText id="param5" value="#{jobBean.param5}" 
+						size="20" required="false" >
+					</h:inputText>	
+					<h:message for="param5" style="color:red" /> 
+					
+			</h:panelGrid>
+
+		  	<h:commandButton id="addJobToCache" value="Add Job to Cache"
+					action="#{jobBean.addJobToCache}"/>
+			
+			<h:outputText id="jobResult"
+					value="#{jobBean.jobResult}"/>
+		
+			<h3>
+				Navigation
+			</h3>
+			<ul>
+			  <li><h:outputLink value="overview.jsf"><h:outputText value="View all grids"/></h:outputLink></li>
+			  <li><h:outputLink value="assignment.jsf"><h:outputText value="Temporary job list"/></h:outputLink></li>
+			  <h:panelGroup rendered="#{!jobBean.loggedIn}">
+	        		<li><h:outputLink value="register.jsf"><h:outputText value="Register"/></h:outputLink></li>
+	        		<li><h:outputLink value="login.jsf"><h:outputText value="Login"/></h:outputLink></li>
+	    	  </h:panelGroup>
+	    	  <h:panelGroup rendered="#{jobBean.loggedIn}">
+	        		<li><h:commandLink action="#{jobBean.logoutUser}"><h:outputText value="Logout"/></h:commandLink></li>
+	    	  </h:panelGroup>	
+	    	  <li><h:outputLink value="home.jsf"><h:outputText value="Home"/></h:outputLink></li>	  
+			</ul>	
+		</h:form>
+	</h:body>
+</html>
