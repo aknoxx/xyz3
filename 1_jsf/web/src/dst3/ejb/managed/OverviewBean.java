@@ -65,19 +65,21 @@ public class OverviewBean {
 		Query query = em.createNamedQuery("findAllComputersByGrid");
 		query.setParameter("gridId", gridId);
 		List<Computer> allComputersOfGrid = query.getResultList();
+		int allCPUs = 0;
+		for (Computer computer : allComputersOfGrid) {
+			allCPUs += computer.getCpus();
+		}
 		
-		query = em.createNamedQuery("findUsedComputersByGrid");
+		query = em.createNamedQuery("findUsedComputersByGrid1");
 		query.setParameter("statusRunning", JobStatus.RUNNING);
 		query.setParameter("statusScheduled", JobStatus.SCHEDULED);
+		query.setParameter("gridId", gridId);
 		List<Computer> usedComputersOfGrid = query.getResultList();
-		
-		//allComputersOfGrid.removeAll(usedComputersOfGrid);
-		
-		int cpus = 0;
+		int usedCPUs = 0;
 		for (Computer computer : usedComputersOfGrid) {
-			cpus += computer.getCpus();
+			usedCPUs += computer.getCpus();
 		}
-		return cpus;
+		return allCPUs - usedCPUs;
 	}
 	
 	public void setLoggedIn(boolean loggedIn) {

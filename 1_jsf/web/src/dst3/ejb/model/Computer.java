@@ -21,6 +21,14 @@ import javax.persistence.*;
 							+ "join e.computers c "
 							+ "where (e.status = :statusRunning OR e.status = :statusScheduled) "
 			)
+			,
+			@NamedQuery(
+					name = "findUsedComputersByGrid1",
+					query = "select c from "
+							+ "Execution e "
+							+ "join e.computers c "
+							+ "where (e.status = :statusRunning OR e.status = :statusScheduled) AND c.cluster.grid.id = :gridId "
+			)
 })
 @Entity
 public class Computer implements Serializable {

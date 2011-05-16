@@ -179,7 +179,6 @@ public class JobManagementBean implements JobManagementLocal {
 
 		freeComputersPerGrid.clear();
 		temporary_jobs.clear();
-		remove();
 	}
 	
 	private int getFreeCPUs(List<Computer> computers) {	

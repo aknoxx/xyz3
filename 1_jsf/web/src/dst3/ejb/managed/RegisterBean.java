@@ -27,9 +27,6 @@ public class RegisterBean {
 	@Resource
 	UserTransaction ut;
 	
-	@Inject
-	private HomeBean homeBean;
-	
 	private ResourceBundle messages;
 	
 	private String result = "";
