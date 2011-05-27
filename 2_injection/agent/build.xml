@@ -24,7 +24,7 @@
     <target name="dist" depends="compile">
         <jar destfile="${lib.dir}/${jarfile.name}" basedir="${build.dir}">
             <manifest>
-                <attribute name="Premain-Class" value="your.premain.class"/>
+                <attribute name="Premain-Class" value="dst3.depinj.agent.Agent"/>
             </manifest>
         </jar>
     </target>

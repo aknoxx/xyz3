@@ -10,7 +10,7 @@
 		<title>dst3 - grid management system</title>
 	</h:head>
 	<h:body>
-		<h:form>
+		<h:form id="homeForm">
 			<h2>
 				DST 3 - Home
 			</h2>
@@ -27,7 +27,7 @@
 			<p></p>
 
 			<h:outputText id="result"
-					value="#{homeBean.result}"/>				
+					value="#{flash.responseMsg}"/>				
 			
 		
 			<h3>

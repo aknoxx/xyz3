@@ -2,20 +2,20 @@ package dst3.depinj.sample;
 
 import dst3.depinj.annotations.Component;
 import dst3.depinj.annotations.ComponentId;
+import dst3.depinj.annotations.Inject;
 import dst3.depinj.annotations.ScopeType;
 
 @Component(scope = ScopeType.SINGLETON)
-public class Singleton {
+public class OtherSingleton {
 
 	@ComponentId
 	private Long id;
-	
-	public Singleton() {
-		
-	}
 
+	@Inject
+	public Singleton s;
+	
 	public void fooBar() {
-		System.out.println("[Singleton] id: " + 
+		System.out.println("[OtherSingleton] id: " + 
 				id + " fooBar called!");
 	}
 	

@@ -11,5 +11,5 @@ public @interface Inject {
 
 	Class<?> specificType() default Object.class;
 
-	boolean required() default false;
+	boolean required() default true;
 }

@@ -2,6 +2,7 @@
 <classpath>
 	<classpathentry kind="src" path="injector/src"/>
 	<classpathentry kind="src" path="sample/src"/>
+	<classpathentry kind="src" path="agent/src/dst3/depinj/agent"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="/home/markus/opt/glassfish3/glassfish/lib/javaee.jar"/>
 	<classpathentry kind="output" path="bin"/>

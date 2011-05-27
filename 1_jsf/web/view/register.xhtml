@@ -10,7 +10,7 @@
 		<title>dst3 - grid management system</title>
 	</h:head>
 	<h:body>
-		<h:form>
+		<h:form id="registerForm">
 			<h2>
 				DST 3 - Register
 			</h2>
@@ -64,12 +64,12 @@
 			<h:inputText id="username" value="#{registerBean.user.username}" 
 				size="20" required="true"
 				label="Username" >
-				<f:validateLength minimum="2" maximum="20" />
+				<f:validator validatorId="usernameValidator" />				
 			</h:inputText>	 
 			<h:message for="username" style="color:red" />
 			
 			Password:	 
-			<h:inputSecret id="passwordId" value="#{registerBean.user.password}" 
+			<h:inputSecret id="passwordId" binding="#{passwordComponent}" value="#{registerBean.user.password}" 
 				size="20" required="true"
 				label="Password" >
 				<f:validateLength minimum="5" maximum="20" />
@@ -79,8 +79,9 @@
 			Confirm pw:	 
 			<h:inputSecret id="confirmPasswordId" 
 				size="20" required="true"
-				label="Confirm pw" >
-				<f:validateLength minimum="5" maximum="20" />
+				label="Confirm pw">
+				<f:validator validatorId="confirmPasswordValidator" />
+    			<f:attribute name="passwordComponent" value="#{passwordComponent}" />
 			</h:inputSecret>	 
 			<h:message for="confirmPasswordId" style="color:red" />
 			
@@ -104,6 +105,8 @@
 	 
 		  <h:commandButton id="register" value="Register"
 					action="#{registerBean.registerUser}"/>
+		 <h:commandButton id="reset" value="Clear"
+					type="reset"/>
 		
 			<h:outputText id="result"
 					value="#{registerBean.result}"/>

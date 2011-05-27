@@ -8,10 +8,12 @@ import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.faces.validator.ValidatorException;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
@@ -33,38 +35,63 @@ public class RegisterBean {
 	private User user;
 	
 	private HttpSession session;
+	private FacesContext facesContext;
 
 	public RegisterBean() {
 		session = (HttpSession) FacesContext.getCurrentInstance()
 		.getExternalContext().getSession(true);
 		
-		FacesContext fc = FacesContext.getCurrentInstance();
-    	messages = fc.getApplication().getResourceBundle(fc, "m");
+		facesContext = FacesContext.getCurrentInstance();
+    	messages = facesContext.getApplication().getResourceBundle(facesContext, "m");
 
 		user = new User();
 		user.setAddress(new Address());
 	}
 	
 	public void registerUser() {
+		
+		Query q = em.createNamedQuery("findUserByName");
+        q.setParameter("username", user.getUsername());        
+        
+        // check if username already exists
+        if (q.getResultList().size() != 0) {
+        	FacesContext context = FacesContext.getCurrentInstance();
+        	
+        	FacesMessage message = new FacesMessage();
+        	message.setSeverity(FacesMessage.SEVERITY_ERROR);
+        	message.setSummary("Username already exists.");
+        	message.setDetail("Username already exists.");
+        	
+        	context.addMessage("registerForm:username", message);
+        	return;
+        }
+		
+        // create new user
 		try {
 			ut.begin();
 			em.persist(user);		
 			ut.commit();	
 
-			session.setAttribute("homeResult", messages.getString("home.registerSuccess"));
+			//session.setAttribute("homeResult", messages.getString("home.registerSuccess"));
+			
+			//flash.setKeepMessages(true);
+			
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.setKeepMessages(true);
+			flash.put("responseMsg", messages.getString("home.registerSuccess"));
+			
 			FacesContext.getCurrentInstance().getExternalContext().redirect("home.jsf");
+			
+			/*FacesMessage message = new FacesMessage();
+			message.setSeverity(FacesMessage.SEVERITY_INFO);
+			message.setSummary(messages.getString("home.registerSuccess"));
+        	message.setDetail(messages.getString("home.registerSuccess"));*/
+        	//context.addMessage("homeForm:result", message);
+			
+			
 		} catch (Exception e) {
 			setResult(messages.getString("register.errorRegisteringUser"));
 		}
-	}
-	
-	public void validateConfirmPassword(FacesContext context, UIComponent toValidate, Object value) {
-	    String confirmPassword = (String)value;
-	    if (!confirmPassword.equals(user.getPassword())) {
-	      FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_ERROR, 
-	    		  "Passwords do not match!", "Passwords do not match!");
-	      throw new ValidatorException(message);
-	    }
 	}
 
 	public void setUser(User user) {

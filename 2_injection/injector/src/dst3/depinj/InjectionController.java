@@ -2,7 +2,10 @@ package dst3.depinj;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import dst3.depinj.annotations.*;
 
@@ -13,13 +16,10 @@ public class InjectionController implements IInjectionController {
 
 	@Override
 	public synchronized void initialize(Object obj) throws InjectionException {
-		
-		//Annotation[] annos = obj.getClass().getAnnotations();
-		initialize(obj, false);
-		
+		initialize(obj, false);		
 	}
 	
-	private void initialize(Object obj, boolean injecting) {
+	private Object initialize(Object obj, boolean injecting) {
 		ScopeType scope;
 		if(obj.getClass().isAnnotationPresent(Component.class)) {
 			Component c = obj.getClass().getAnnotation(Component.class);
@@ -30,9 +30,13 @@ public class InjectionController implements IInjectionController {
 					+ obj.getClass().getName());
 		}		
 		
+		Object objToInject = null;
 		boolean hasId = false;
 		Field idField = null;
-		for (Field field : obj.getClass().getDeclaredFields()) {
+		List<Field> fields = new ArrayList<Field>();
+		Collections.addAll(fields, obj.getClass().getDeclaredFields());
+
+		for (Field field : fields) {
 			ComponentId cId = field.getAnnotation(ComponentId.class);
 			if(cId != null) {
 				if(hasId) {
@@ -51,97 +55,54 @@ public class InjectionController implements IInjectionController {
 				if(inj != null) {
 					Class<?> injClassType;
 					if(inj.specificType() == Object.class) {
-						//injClassType = obj.getClass();
 						injClassType = field.getType();
 					}
 					else {
-						injClassType = inj.specificType();
-					}					
+						injClassType = inj.specificType();						
+					}
+					
+					if(singletons.containsKey(injClassType)) {
+						objToInject = singletons.get(injClassType);
+					}
 					
 					Component injC = injClassType.getAnnotation(Component.class);
 					if(injC == null) {
-						throw new InjectionException("Impossible to inject required object in class " 
+						if(inj.required()) {
+							throw new InjectionException("Impossible to inject required object in class " 
 								+ obj.getClass().getName());
-					}
-					
-					ScopeType injScopeType = injC.scope();
-					
-					Object myFruit = null;
-					if(injScopeType.equals(ScopeType.SINGLETON)) {
-						if(singletons.containsKey(injClassType)) {
-							myFruit = singletons.get(injClassType);
 						}
-						//singletons.put(obj.getClass(), obj);
 					}
-					
-					if(myFruit == null) {
-						try {
-							@SuppressWarnings("unchecked")
-							Class<Object> fc = (Class<Object>) Class.forName(injClassType.getName());
-							myFruit = fc.newInstance();
-						} catch (InstantiationException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (IllegalAccessException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (ClassNotFoundException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-						//if(scope.equals(ScopeType.SINGLETON)) {
-						//	singletons.put(injClassType, myFruit);
-						//}
-						initialize(myFruit, true);
-					}
-					
-					Object objToInj = null;
-					//try {
-						//objToInj = injClassType.newInstance();
-						//initialize(myFruit, true);
-						
-					/*} catch (InstantiationException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					} catch (IllegalAccessException e1) {
-						// TODO Auto-generated catch block
-						e1.printStackTrace();
-					}*/
-					
-					/*Component injC = injClassType.getAnnotation(Component.class);
-					if(injC == null) {
-						throw new InjectionException("Impossible to inject required object in class " 
-								+ obj.getClass().getName());
-					}
-					
-					ScopeType injScopeType = injC.scope();					
-					*/
-					/*
-					Object objToInj = null;
-					if(injScopeType.equals(ScopeType.SINGLETON)) {
-						if(!singletons.containsKey(injClassType)) {
-							singletons.put(injClassType, injObj);
-						}
-					}					
-					else {						
-						try {
-							objToInj = injClassType.newInstance();
-						} catch (Exception e) {
-							if(inj.required()) {
-								throw new InjectionException("Impossible to inject required object in class " 
-										+ obj.getClass().getName());
+					else {
+						if(objToInject == null) {
+							try {
+								@SuppressWarnings("unchecked")
+								Class<Object> fc = (Class<Object>) Class.forName(injClassType.getName());
+								objToInject = fc.newInstance();
+							} catch (InstantiationException e) {
+								throw new InjectionException(e);
+							} catch (IllegalAccessException e) {
+								throw new InjectionException(e);
+							} catch (ClassNotFoundException e) {
+								throw new InjectionException(e);
 							}
+							initialize(objToInject, true);
 						}
-					}			*/		
-					if (!Modifier.isPublic(field.getModifiers())) {
-						field.setAccessible(true);
-			        }
-			        try {
-			        	field.set(obj, myFruit);
-			        	
-			        } catch (IllegalAccessException iae) {
-			        		throw new InjectionException(iae);
-			        }					
+						
+						if(objToInject == null && inj.required()) {
+							throw new InjectionException("Impossible to inject required object in class " 
+								+ obj.getClass().getName());
+						}
+
+						if (!Modifier.isPublic(field.getModifiers())) {
+							field.setAccessible(true);
+				        }
+				        try {
+				        	field.set(obj, objToInject);
+				        	
+				        } catch (IllegalAccessException iae) {
+				        		throw new InjectionException(iae);
+				        }
+					}
 				}
 			}
 		}
@@ -166,18 +127,33 @@ public class InjectionController implements IInjectionController {
 					throw new InjectionException("Singleton cannot be injected more than once in class " 
 							+ obj.getClass().getName());
 				}
+				return singletons.get(obj.getClass());
 			}
 			else {
 				singletons.put(obj.getClass(), obj);
+				return obj;
 			}
 		}
+		return objToInject;
 	}
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public <T> T getSingletonInstance(Class<T> clazz) throws InjectionException {
+		
 		if(!singletons.containsKey(clazz)) {
-			throw new InjectionException("Instance of specified class does not exist.");
+			Object singleton;
+			try {
+				Class<Object> fc = (Class<Object>) Class.forName(clazz.getName());
+				singleton = fc.newInstance();
+			} catch (InstantiationException e) {
+				throw new InjectionException(e);
+			} catch (IllegalAccessException e) {
+				throw new InjectionException(e);
+			} catch (ClassNotFoundException e) {
+				throw new InjectionException(e);
+			}
+			initialize(singleton);
 		}
 		return (T) singletons.get(clazz);
 	}

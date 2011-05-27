@@ -12,5 +12,9 @@
       <base-name>messages</base-name>
       <var>m</var>
     </resource-bundle>
+    <resource-bundle>
+      <base-name>ValidationMessages</base-name>
+      <var>vm</var>
+    </resource-bundle>
   </application>
 </faces-config>

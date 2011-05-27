@@ -27,7 +27,7 @@
 
     <!-- set your main class with agent support -->
     <target name="run-with-agent" depends="compile">
-        <java classname="your.main.class" fork="true" classpathref="classpath">
+        <java classname="dst3.depinj.sample.TestAgent" fork="true" classpathref="classpath">
             <jvmarg value="-javaagent:${lib.dir}/dst3_2_agent.jar"/>
         </java>
     </target>
