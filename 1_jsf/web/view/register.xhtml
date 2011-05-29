@@ -64,7 +64,7 @@
 			<h:inputText id="username" value="#{registerBean.user.username}" 
 				size="20" required="true"
 				label="Username" >
-				<f:validator validatorId="usernameValidator" />				
+				<f:validateLength minimum="2" maximum="20" />			
 			</h:inputText>	 
 			<h:message for="username" style="color:red" />
 			
@@ -106,10 +106,10 @@
 		  <h:commandButton id="register" value="Register"
 					action="#{registerBean.registerUser}"/>
 		 <h:commandButton id="reset" value="Clear"
-					type="reset"/>
+					type="Reset"/>
 		
 			<h:outputText id="result"
-					value="#{registerBean.result}"/>
+					value="#{flash.responseMsg}"/>
 			
 			<h3>
 				Navigation

@@ -30,8 +30,6 @@ public class RegisterBean {
 	UserTransaction ut;
 	
 	private ResourceBundle messages;
-	
-	private String result = "";
 	private User user;
 	
 	private HttpSession session;
@@ -70,11 +68,7 @@ public class RegisterBean {
 		try {
 			ut.begin();
 			em.persist(user);		
-			ut.commit();	
-
-			//session.setAttribute("homeResult", messages.getString("home.registerSuccess"));
-			
-			//flash.setKeepMessages(true);
+			ut.commit();
 			
 			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
 			flash.setKeepMessages(true);
@@ -87,10 +81,10 @@ public class RegisterBean {
 			message.setSummary(messages.getString("home.registerSuccess"));
         	message.setDetail(messages.getString("home.registerSuccess"));*/
         	//context.addMessage("homeForm:result", message);
-			
-			
+				
 		} catch (Exception e) {
-			setResult(messages.getString("register.errorRegisteringUser"));
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.put("responseMsg", messages.getString("register.errorRegisteringUser"));
 		}
 	}
 
@@ -100,13 +94,5 @@ public class RegisterBean {
 
 	public User getUser() {
 		return user;
-	}
-
-	public void setResult(String result) {
-		this.result = result;
-	}
-
-	public String getResult() {
-		return result;
 	}
 }

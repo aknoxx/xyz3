@@ -1,4 +1,4 @@
-package dst3.ejb.managed;
+package dst3.ejb.validator;
 
 import java.util.ResourceBundle;
 

@@ -6,6 +6,7 @@ import java.util.ResourceBundle;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -27,8 +28,6 @@ public class LoginBean {
 	
 	private ResourceBundle messages;
 	
-	private String result;
-	
 	public LoginBean() {
 		session = (HttpSession) FacesContext.getCurrentInstance()
 		.getExternalContext().getSession(true);
@@ -40,23 +39,31 @@ public class LoginBean {
 	public void loginUser() {
 		Query q = em.createNamedQuery("findUserByName");
 		q.setParameter("username", username);
-		User user = (User) q.getSingleResult();
+		
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		flash.setKeepMessages(true);
+		
 		try {
+			User user = (User) q.getSingleResult();
+			
 			if(password.equals(user.getPassword())) {
 				session.setAttribute("loggedIn", true);
 				session.setAttribute("userId", user.getId());
-				session.setAttribute("homeResult", messages.getString("home.loginSuccess"));
-				setResult("");
-				FacesContext.getCurrentInstance().getExternalContext().redirect("home.jsf");
+				
+				flash.put("responseMsg", messages.getString("home.loginSuccess"));
 			}
 			else {
 				session.setAttribute("loggedIn", false);
-				setResult(messages.getString("login.wrongCredentials"));
-				FacesContext.getCurrentInstance().getExternalContext().redirect("login.jsf");
+				flash.put("responseMsg", messages.getString("login.wrongCredentials"));
 			}
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			FacesContext.getCurrentInstance().getExternalContext().redirect("home.jsf");
+		} catch (Exception e) {
+			session.setAttribute("loggedIn", false);
+			flash.put("responseMsg", messages.getString("login.wrongCredentials"));
+			try {
+				FacesContext.getCurrentInstance().getExternalContext().redirect("home.jsf");
+			} catch (IOException e1) {
+			}
 		}
 	}
 	
@@ -71,13 +78,5 @@ public class LoginBean {
 	}
 	public String getPassword() {
 		return password;
-	}
-
-	public void setResult(String result) {
-		this.result = result;
-	}
-
-	public String getResult() {
-		return result;
 	}
 }

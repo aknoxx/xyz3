@@ -10,6 +10,7 @@ import javax.annotation.Resource;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -31,12 +32,6 @@ public class HomeBean {
 	private ResourceBundle messages;
 	
 	private HttpSession session;
-	
-	Integer randomInt = null;
-    Integer userNumber = null;
-    String response = null;
-    private long maximum = 10;
-    private long minimum = 0;
     
     private String result = "";
     private boolean disabledAdd = false;
@@ -54,11 +49,6 @@ public class HomeBean {
     		session.setAttribute("loggedIn", state);
     		setLoggedIn(state);
     	}
-    	if(session.getAttribute("homeResult") != null) {
-    		setResult((String) session.getAttribute("homeResult"));
-    		// reset result value
-    		session.setAttribute("homeResult", null);
-    	}
     }
     
     public void logoutUser() {
@@ -71,19 +61,9 @@ public class HomeBean {
     	
     	session = (HttpSession) FacesContext.getCurrentInstance()
 		.getExternalContext().getSession(true);
-    	//HttpSession session = (HttpSession) FacesContext.getCurrentInstance()
-    	//							.getExternalContext().getSession(true);
-    	//messages = (ResourceBundle)session.getAttribute("messages");    	
     	
     	FacesContext fc = FacesContext.getCurrentInstance();
     	messages = fc.getApplication().getResourceBundle(fc, "m"); 
-    	
-    	/*
-    	BackingBean managedBean = new BackingBean();  
-    	httpSession.setAttribute("managedBeanName", managedBean); 
-    	
-    	BackingBean managedBean = (BackingBean) externalContext.getSessionMap().get("managedBeanName");  
-    	*/
     }
     
     public void addTestData() {
@@ -132,11 +112,14 @@ public class HomeBean {
 		
 			ut.commit();
 			
-			setResult(messages.getString("home.addedTestData"));
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.put("responseMsg", messages.getString("home.addedTestData"));
+			
 			disabledAdd = true;
 			disabledRemove = false;
 		} catch (Exception e) {
-			setResult(messages.getString("home.errorAddData"));
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.put("responseMsg", messages.getString("home.errorAddData"));
 		}
     }
     
@@ -184,43 +167,14 @@ public class HomeBean {
 			
 			disabledAdd = false;
 			disabledRemove = true;
-			setResult(messages.getString("home.removedTestData"));
+			
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.put("responseMsg", messages.getString("home.removedTestData"));
 		
 		} catch (Exception e) {
-			setResult(messages.getString("home.errorRemoveData"));
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.put("responseMsg", messages.getString("home.errorRemoveData"));
 		}
-    }
-
-    public void setUserNumber(Integer user_number) {
-        userNumber = user_number;
-    }
-
-    public Integer getUserNumber() {
-        return userNumber;
-    }
-
-    public String getResponse() {
-        if ((userNumber != null) && (userNumber.compareTo(randomInt) == 0)) {
-            return "Yay! You got it!";
-        } else {
-            return "Sorry, " + userNumber + " is incorrect.";
-        }
-    }
-
-    public long getMaximum() {
-        return (this.maximum);
-    }
-
-    public void setMaximum(long maximum) {
-        this.maximum = maximum;
-    }
-
-    public long getMinimum() {
-        return (this.minimum);
-    }
-
-    public void setMinimum(long minimum) {
-        this.minimum = minimum;
     }
 
 	public void setDisabledAdd(boolean disabledAdd) {
@@ -237,14 +191,6 @@ public class HomeBean {
 
 	public boolean getDisabledRemove() {
 		return disabledRemove;
-	}
-
-	public void setResult(String result) {
-		this.result = result;
-	}
-
-	public String getResult() {
-		return result;
 	}
 
 	public void setLoggedIn(boolean loggedIn) {

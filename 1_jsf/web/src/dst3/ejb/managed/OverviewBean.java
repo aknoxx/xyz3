@@ -51,7 +51,6 @@ public class OverviewBean {
 		try {
 			FacesContext.getCurrentInstance().getExternalContext().redirect("job.jsf");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

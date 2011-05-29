@@ -1,31 +1,27 @@
 package dst3.ejb.managed;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.ejb.EJB;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
+import javax.faces.context.Flash;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.servlet.http.HttpSession;
 import javax.transaction.UserTransaction;
 
-import dst3.ejb.JobManagementBean;
 import dst3.ejb.JobManagementLocal;
 import dst3.ejb.model.*;
 import dst3.ejb.util.ComputersNotAvailableException;
 import dst3.ejb.util.ComputersNotAvailableTemporaryException;
 import dst3.ejb.util.InvalidGridIdException;
-import dst3.ejb.util.UserNotLoggedInException;
 
 @ManagedBean
 @SessionScoped
@@ -50,8 +46,6 @@ public class JobBean {
 	private String param3;
 	private String param4;
 	private String param5;
-	private String jobResult;
-	private String assignmentResult;
 	
 	private HttpSession session;
 	private boolean loggedIn = false; 
@@ -99,24 +93,26 @@ public class JobBean {
 	}
 	
 	public void submitJobAssignments() {
+		Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+		
 		if(loggedIn) {
-			Long userId = (Long) session.getAttribute("userId");
+			Long userId = (Long) session.getAttribute("userId");			
+			
 			try {
 				jm.submitJobList(userId);
-				try {
-					setAssignmentResult("");
-					session.setAttribute("homeResult", messages.getString("home.submissionSuccess"));
+				try {					
+					flash.put("responseMsg", messages.getString("home.submissionSuccess"));	
+					flash.setKeepMessages(true);
 					FacesContext.getCurrentInstance().getExternalContext().redirect("home.jsf");
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			} catch (ComputersNotAvailableException e) {
-				setAssignmentResult(messages.getString("assignment.notEnoughComputers"));
+				flash.put("responseMsg", messages.getString("assignment.notEnoughComputers"));
 			}
 		}
 		else {
-			setAssignmentResult(messages.getString("assignment.loginNeeded"));
+			flash.put("responseMsg", messages.getString("assignment.loginNeeded"));
 		}
 	}
 	
@@ -149,11 +145,11 @@ public class JobBean {
 				resetForm();
 				FacesContext.getCurrentInstance().getExternalContext().redirect("overview.jsf");
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		} catch (ComputersNotAvailableTemporaryException e) {
-			setJobResult(messages.getString("job.notEnoughCPUs"));
+			Flash flash = FacesContext.getCurrentInstance().getExternalContext().getFlash();
+			flash.put("responseMsg", messages.getString("job.notEnoughCPUs"));
 		} catch (InvalidGridIdException e) {
 			// not possible here
 		}
@@ -168,7 +164,6 @@ public class JobBean {
 		param3 = null;
 		param4 = null;
 		param5 = null;
-		assignmentResult = "";
 	}
 	
 	
@@ -235,21 +230,5 @@ public class JobBean {
 
 	public boolean isLoggedIn() {
 		return loggedIn;
-	}
-
-	public void setJobResult(String jobResult) {
-		this.jobResult = jobResult;
-	}
-
-	public String getJobResult() {
-		return jobResult;
-	}
-
-	public void setAssignmentResult(String assignmentResult) {
-		this.assignmentResult = assignmentResult;
-	}
-
-	public String getAssignmentResult() {
-		return assignmentResult;
 	}
 }

@@ -1,9 +1,8 @@
-package dst3.ejb.service;
+package dst3.ejb.wsDef;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.ejb.Stateless;
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 import javax.persistence.EntityManager;
@@ -16,14 +15,13 @@ import dst3.ejb.model.Job;
 import dst3.ejb.model.JobStatus;
 import dst3.ejb.model.User;
 
-@Stateless
 @WebService
-public class SearchWebService {
+public class JobSearch {
 	
 	@PersistenceContext
 	EntityManager em;
 
-    public SearchWebService() {}
+    public JobSearch() {}
 
     @WebMethod
     public List<SearchResultDto> search(String gridName) {    	

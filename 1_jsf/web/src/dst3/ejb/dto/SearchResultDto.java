@@ -12,6 +12,8 @@ public class SearchResultDto implements Serializable {
 	public Date finish;
 	public String username;
 	
+	public SearchResultDto() { }
+	
 	public SearchResultDto(Long jobId, Date start, Date finish, String username) {
 		super();
 		this.jobId = jobId;
