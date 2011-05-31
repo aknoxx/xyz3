@@ -13,7 +13,18 @@ public class InjectionController implements IInjectionController {
 	
 	private static Long uniqueId = new Long(0);	
 	private static Map<Class<?>, Object> singletons = new HashMap<Class<?>, Object>();
-
+	private static InjectionController instance = null;
+	
+	public static InjectionController getInstance() {
+		if(instance == null) {
+			instance = new InjectionController();
+		}
+		return instance;
+	}
+	
+	private InjectionController() {
+	}
+	
 	@Override
 	public synchronized void initialize(Object obj) throws InjectionException {
 		initialize(obj, false);		
