@@ -30,7 +30,7 @@
 
     <!-- Set your main class -->
     <target name="run" depends="compile">
-        <java classname="your.main.class" fork="true" classpathref="classpath"/>
+        <java classname="dst3.dynload.Test" fork="true" classpathref="classpath"/>
     </target>
     
     <target name="clean">

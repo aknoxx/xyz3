@@ -1,5 +1,6 @@
 package dst3.depinj.agent;
 
+import java.lang.annotation.Annotation;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
@@ -34,13 +35,24 @@ public class SimpleTransformer implements ClassFileTransformer {
 	private byte[] doClass(String className, Class<?> clazz, byte[] b) {
 	    ClassPool pool = ClassPool.getDefault();
 	    CtClass cl = null;
-	    /*		
+	    		
+	    System.out.println("doClass: check " + className);
 		//if(clazz.isAnnotationPresent(Component.class)) {
+	    
+	   
 			
+	    Annotation[] sum = clazz.getAnnotations();
+	    if(sum != null) {
+	    	System.out.println(sum.toString());
+	    }
+	    
+	    System.out.println("check " + className);
+	    System.out.println(sum.length + " Annotations.");
+	    
 		if(clazz.getAnnotation(Component.class) != null) {
 	  
 		    try {		    	
-			    	//System.out.println("Transformer to Transform Class: " + className);
+			    	System.out.println("Transformer to Transform Class: " + className);
 			    	
 			      cl = pool.makeClass(new java.io.ByteArrayInputStream(b));
 			      
@@ -64,7 +76,7 @@ public class SimpleTransformer implements ClassFileTransformer {
 			        cl.detach();
 			      }
 		    }
-		}*/
+		}
 	    
 	    return b;
 	  }

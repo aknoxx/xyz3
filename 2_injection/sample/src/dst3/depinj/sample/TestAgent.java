@@ -4,9 +4,9 @@ public class TestAgent {
 
 	public static void main(String[] args) {
 		
-		//Singleton s = new Singleton();
+		Singleton s = new Singleton();
 		
-		//System.out.println("Id of component: " + s.getId());
+		System.out.println("Id of component: " + s.getId());
 		//cwi.callSi();
 		
 	}
